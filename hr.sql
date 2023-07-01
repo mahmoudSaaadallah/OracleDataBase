@@ -549,3 +549,4 @@ from employees;
  order by salary desc
  offset 1 row
  fetch first null rows with ties;
+ 
