@@ -1019,3 +1019,401 @@ from dual;--www.name_of_site.com.
 
 -------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------Replace function--------------------------------------------------------------
+-- Replace function uses to replace old substring with another from the givin string
+Replace(String, String_to_replaced, [replacement_string])
+/*
+    * It takes three parameer two of them are mandatory and one is optional.
+       - the first parameter is the string that will be processed.
+       - the secand parameter is the string or substring that we need to change.
+       - the third parameter is the string that will be insert instead of the secand parameter.
+*/
+
+select replace('my name is mahmoud', 'a', '*'),  replace('my name is mahmoud', 'a')
+from dual; -- 'my n*me is m*hmoud'  |  'my nme is mhmoud'
+/*
+    * as we see here we use the replace function twice 
+      - the first one to replace letter 'a' from the givin string with letter '*'
+      - the secand one to replace letter 'a' from the givien string, but we didn't specifie any character to insert instead of the removed one.
+    * the output of the first function is the 'my n*me is m*hmoud' as each letter a replaced by '*'.
+    * the output of the secand function is the 'my nme is mhmoud' as each letter a removed.
+    -- SO IF WE DIDN'T SPECIFIE THE REPLACEMENT CHARACTER THE ENGIN WILL REMOVE THE SUBSTRING AND RPLACE IT WITH NOTHING
+*/
+
+select replace('my name is mahmoud', 'a', '#')
+from dual; -- 'my n#me is m#hmoud'
+
+select replace('my name is mahmoud', 'am', '_')
+from dual;  -- 'my n_e is mahmoud'
+-- here we use replace function to replace 'am' with underscore _
+/*
+    * IN THE REPLACE FUNCTINO THE STRING_TO_BE_REPLACED MUST MATCH ALL OF IT WITH THE SAME PATTERN OF CHARACTER 
+        IN THE STRING THIS MEAN TH REPLACE FUNCTION DOESN'T WORK LIKE LTRIM OR RTRIM WHICH MATCH TEH STRING
+        OR INDIVUAL CHARACTEROF SUBSTRING.
+    
+    * replace match and comparing the substring with the same pattern. so we find that the 'm' and athe letter 'a'  in 
+        the word 'mahmoud' not removed efen if they are part of the string_to_be_replaced, but they are not in the same pattern.
+*/
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------Lpad & Rpad function--------------------------------------------------------------
+-- Lpad is stands for left pad and Rpad stands for right pad
+-- it pass the left side of my string with specified character or character addup to th especified lentgth
+       9- Lpad(String, target_length, padding_expression)
+       10- Rpad(String, target_length, padding_expression)
+/*
+    * it take three parameter 
+       - string: the givien string that will be processed.
+       - target_length: it's the length of th eresult or the output of these functions after padding 
+                                this mean how many characters this string will be after the function useage.
+        - padding exprission: the character that will be padding.
+*/
+
+-- IF THE TARGET_LENGTH IS LESS THAN TEH LENGTH OF THE ORIGINAL STRING, THE ORIGINLA STRING WILL BE TRUNCATE
+    -- UNTIL THAT LENGTH OF CHARACTERS REMAINS.
+
+select lpad('mahmoud', 12, '*')
+from dual; -- '*****mahmoud'.
+-- in this query we use lpad function to make the length of the string 'mahmoud' = 12 by adding number of characters '*'
+     -- to the left side of the string until get the target_length.
+    
+select rpad('mahmoud', 12, '#')
+from dual;  --'mahmoud#####'
+-- in this query we use rpad function to make the length of the string 'mahmoud' = 12 by adding number of characters '#'
+     -- to the right side of the string until get the target_length.
+
+select rpad('mahmoud', 4, '*')
+from dual;  --'mahm'.
+-- in this query the target_length is less than the length of the character so the engine will trancate the string until get the target_length.
+-- The trancate process start from the end of the the string even if we use lpad or rpad.
+select lpad('mahmoud', 4, '*')
+from dual;  --'mahm'.
+
+-- we could put the string to these functions as a compination string
+select lpad('my name is:' || first_name, 20, '_')
+from employees;
+-- here the givien string is the compination string.
+select ceil(2) from dual;
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------Numeric Functions--------------------------------------------------------------------
+--numeric functions accept numberic value at the input and return numeric value at the output.
+/*
+    * Round: take in a number an rounds it to the specified number of decimal places.
+    * trunct: take in a numbr and truncate it to the specified number of decimal placees.
+    * ceil: stands for ceiling return the smallest integer number greater than or equal to the specified number.
+    * floor: return the highest intger number less than or equal to the specified number.
+    * mod: return the rminder if division which mean returns to left over of a dicision of two number.
+*/
+
+round(number,[decimal])
+select round(126.5465, 3)
+from dual;--126.547
+select round(24.32, 1)
+from dual;-- 24.3
+select round(24.32)
+from dual;--24
+select round(24.75)
+from dual; -- 25
+--IF WE DON'T SPECIFIE THE NUMBER OF DECIMAL NUMBE THE ALL DECIMAL NUMBER WILL BE AROUNDED.
+
+TRUNC(NUMBER, [DECIMAL])
+select trunc(124.64, 1)
+from dual; --124.6
+select trunc(124.6465, 3)
+from dual; --124.646
+select trunc(124.69, 1)
+from dual; --124.6
+select trunc(124.64)
+from dual;--124
+select trunc(124.12)
+from dual;-- 124
+--IF WE DON'T SPECIFIE THE NUMBER OF DECIMAL NUMBE THE ALL DECIMAL NUMBER WILL BE truncated.
+
+CEIL(NUMBER)
+select ceil(2.75)
+from dual; -- 3
+select ceil(2.1)
+from dual; --3
+select ceil(2)
+from dual; --2
+--IF THERE IS ANY DECIMAL NUMBER GTEATER THAN 0 THEN THE CEIL FUNCTION WILL INCREASE THE INTEGER PART OF NUMBER
+   -- BY ONE AND DELETE THE DECIMAL PART, IF NOT THE NUMBER DOESN'T CHANGE.
+
+FLOOR(NUMBER)
+select floor(2.75)
+from dual; --2
+select floor(2.71)
+from dual; --2
+select floor(2)
+from dual;--2
+--IF THERE IS ANY DECIMAL NUMBER GTEATER THAN 0 THEN THE FLOOR FUNCTION WILL DELETE THE DECIMAL PART, IF NOT THE NUMBER DOESN'T CHANGE.  
+
+MOD(NUMBER1, NUMBER2)
+select mod(8, 5)
+from dual; --3
+select mod(10, 5)
+from dual; --0
+select mod(6, 5)
+from dual; --1
+select mod(3, 5)
+from dual; --3
+--IF THE NUMBER1 IS LESS THAN THE NUMBER2 THEN THE REMENDER IS EQUAL TO THE NUMBER1.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------Nested Function----------------------------------------------------------------------------------------------------
+-- Functions can be nested within each other. This is called Nesting functions.
+-- Nested functions are evaluated starting from the innermost function and executed
+-- one by one toward the outermost one.
+-- The result of the innermost function becomes the input of the outer function.
+-- We can use as many nested functions as we want.
+
+--EXAMPLE
+select 'mahmoud saadallah'
+from dual; -- mahmoud saadallah
+-- this function get the string 'mahmoud saadallah'
+-- suppose that we want to get the last name(sur name) of the this string, we could do so by using nested functions
+select substr('mahmoud saadallah', instr('mahmoud saadallah', ' ')+1, length('mahmoud saadallah')) as output
+from dual; -- 'saadallah'
+/*
+    * here we use the nested function to get the last name of the 'mahmoud saadallah' the engine will start excuteion from the 
+        most inner function which is length and get the length of the string then put the length in  the substr function as the length of substring
+        then the instr function excute to get the position of the space that sperate the first name and last name then we add 
+        one to output of the isntr function to get the position of the first lettter in the lastname, then the outer function excute
+        to get the substring which start form the output of the instr function plus one and end with last letter in the string
+*/
+select substr('mahmoud saadallah', instr('mahmoud saadallah', ' ')+1) as output
+from dual; -- 'saadallah'
+-- here we get the same result even if we didn't use the lenght function to get the position of the last chracter at the substr
+    -- function, as we say before in the substr function if didn't specifie the length of substring it stop at the end of the string.
+ 
+ -- we could applay the pervious function with the input from user using substitutin variables.   
+Accept name prompt 'please enter your full name';
+select substr('&name', instr('&name', ' ') + 1, length('&name')) as output
+from dual; -- return the last name of the name of user.
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------Date values & fromate---------------------------------------------------------------------
+-- DATE is the main datatype used in Oracle for storing the date values.
+-- Oracle Database stores the date values in an internal numeric format.
+-- It stores a seven-byte number that contains the century, year, month, day, and hour, minute, and second.
+-- There are many different date representations in Oracle like ('DD-MON-RR' 'DD-mm-YY' CDD/mm/YYYY',etc.)
+-- The default date formate in oracle is 'DD- MON-RR'.
+/*
+    * DD: is a two digits numeric representation of the day of the month it must be an numeric value between 1 and 31 
+    * MM: means abbreviated name of month such as June may etc.
+    * YYYY: mean four digit like 2024.
+    * YY & RR : they represent the year of that date like 24 in 2024 however they shall only two digits of the year
+       so what is the difference between the Oracle double YY and double RR date.
+       
+ ----->>> double y shows the last two years of a year for example 99 for 1999 depending on which year we are in the present
+ ----->>> the double RR date format is a different time format element that allows us to show 20th century days but 
+                 in the 21st century by specifying only the last two digits of the Year.
+        -->> the last simple converts 2 digits into four digits by rounding but it measure different data values 
+                  depending on which date you are in or which date you are interested this might seem with complicated or difficult to 
+                  understood at first please try to understand as much as possible because this might be a question in job interviews.
+                  * first of all please keep in mind that the last digits in both representations never change only the first two digits change
+                     I mean only the century may change depending on the year you are in and the year you are looking for
+        -->> the centure( the first to digits) change depending on what year you are living in while excutin that query and when 
+                  the year that you are liikin gfor 
+            -> if the specified year the year in th equery is in th first half of the century (if the last two digits in the year in 
+                 the first half of the centure), like 22 in 1922 then the first half mean between 00 and 49 and the curren tyoar now is in 
+                 the first half tooo then the centure ( the first two difits in the year) like 19 in 1922 will be the same don't change.
+            -> if the spcified year in the query in the first half of th cntur and th current year now is in th secand half and the current
+                 year now is in teh secand half then teh century two digits increases by one.
+            -> if the specified year the year in the query is inth secand half and current year is in teh same half(the secand half)
+                 then the centure digits the first two digits don't change.
+            -> if th specified year the year in teh quey is in th secan dhalf beytween 50 and 99  and the curren tyear is in the 
+                 first half theb th century digits decrease by one/
+ --EXAMPLES     CURRENT YEAR           ||               SPECIFIED YEAR            ||         RR                 ||          YY
+                                1990                                         15-Jun-95                             1995                         1995   
+                                1990                                         15-Jun-24                             2024                         1924   
+                                2024                                         15-Jun-24                             2024                         2024         
+                                2024                                         15-Jun-95                             1995                         2095          
+              
+              --> the double yy always use the same current centure.
+              
+    # by the way the data values do not have to be in this order I mean this one first followed by month then years 
+        now they don't have to be like that all the time if you type month first you will see month first or if you 
+        type it at the end of date value you will see the month at the end of the date.
+*/
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------Date Datatype-------------------------------------------------------------------------
+-- Date: the stander data type that stores date values in oracle. It's also stores time.
+-- Timestamp: is the data type that stores year, month, dat, hor, minute, secands as well as fractional secand.
+-- timestamp with time zone: this data type is the same as time stamp, butit tores the time zone along with it.
+-- timestamp with local time zone: this datatype is similar to Time stamp with time zone, but the sstored time zone is databses's time zone
+
+--------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------Oracle Date Functions------------------------------------------------------
+-- SYSDATE: returns the current date and time of the OS where the Oracle Database is installed.
+-- CURRENT DATE : returns the current date and time of the place where the user's session is logged in from.
+-- SESSIONTIMEZONE: returns time zone of the user's session.
+-- SYSTIMESTAMP: returns the date and time of the database.
+-- CURRENT TIMESTAMP: returns current date and time from user's session.
+
+--# if there is a word fcurrent or session in the name of function this mean the current time zone of the user(his location)
+--# if the function name includes the word sus, it means the date and time od the system where the data base installed.
+Select current_date, sessiontimezone, systimestamp, sysdate, systimestamp, current_timestamp 
+from dual;
+
+select current_date 
+from dual;
+select sysdate 
+from dual;
+select sessiontimezone 
+from dual;
+select systimestamp 
+from dual;
+select current_timestamp 
+from dual;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------Arithmatic operation with date----------------------------------------------------------
+--We can add or subtract a number from a date, and the result of this operation will also be a date.
+-- for example if we add 2 to the sysdate the output will be a date which is two days after the systems
+-- Any time we add the numbet to a date value or subtract form it, oracle assumes that number represents the number of days.
+select sysdate + 4 from dual; -- it return 4 days after today.
+select sysdate - 4 from dual; -- it return 4 days before today.
+
+-- SO WHAT IF WE WANT TO ADD HOURS OR MINUTES OR SECANDS TO THE SYSDATE?
+/*
+    * it's depend on math, so if you want to add an hour later then as we know the number tehat we add represents days so 
+      we could divide teh day to 24 hours so to add an hour we could add 1/24.
+    --> and to add one minute we could add 1/(24*60)
+*/
+select sysdate+1/24 
+from dual;
+select sysdate + 1/(24*60)
+from dual;
+
+-- by subtraction we could get how many days or years that the employees work in the company 
+select sysdate -  hire_date as number_of_days
+from employees;
+/*  
+    * here this quey will return the number of days that each employees work in teh company, but if we see the ouput we will find that
+       the ouput has a decimal numbers as it also subtract hours, minuts, and secands from the hire_date until now.
+    * we could use a trunc function to get the ingteger number or use round function.
+*/
+select trunc((sysdate - hire_date)/360)
+from employees;--here we will get th number of years that each employeee working in the company.  
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------Date manipulation functions------------------------------------------------------------------------------------
+--Date functions operate on dates and return dates, numbers or texts.
+
+
+ ADD_Months(Date, n): 
+-- This function add a specified number of months to a specified date.
+-- This parameter N is an integer number.
+-- The value returned from this function is the input data value, plus the number of months you provide.
+select Add_months('18 -sep-23', 3)
+from dual;-- 15-SEP-22
+-- this query add three months to the specified date.
+/*
+    - if you pass in the 18th of September 2023 as the date parameter,and add three months to it, the function will return.
+         The 18th of December 2019 three, which is three months after the input date.
+    * if the month exists December, it will increase the year as well.
+    * By the way, if the specified day is the last day of the month, the Edmans function may also change the day as well.
+        In such situations, it changes the day to the last day of the target month.
+    * the ADD_Months function accept negative values in the numbe of months to be added, but in thsi xase the date will 
+       be subtracted by the number of months
+*/
+select add_months('30-jun-20', 2)
+from dual; -- 31-AUG-20
+select add_months('30-dec-23', 2) 
+from dual; --29-FEB-24
+select add_months('30-dec-23', -2) 
+from dual; --30-OCT-23
+ --So we can add or subtract any number of months from a date using the Add-months function.
+                                                --------------------------------------------------
+
+Months_between(date1, date2)
+--It accepts two arguments in data format and returns to monts between them.
+-- If date one is greater than date two, the value will be positiv, Otherwise, it will be negative.
+-- So months between returns, how many months have passed between two given dates?
+
+select months_between('30-jun-20', '31-aug-20')
+from dual;--     -2
+
+select months_between( '31-aug-20' ,'30-jun-20')
+from dual;--     2
+
+                                                --------------------------------------------
+Round(date, [formate])
+-- round a date/time value to a specified element.
+-- This function accepts two parameters, which are a date value and a format.
+-- The first parameter must be added value or an expression returns a date.
+-- And the second parameter is the format.
+/*
+    * The format argument is a text that specifies which unit of the date it should be rounded.
+    * It can be a day, month or a year, etc., or it can be augmented as well, since it's an optional parameter.
+    * If you don't specify in a format parameter here, the date is rounded to the nearest day by default.
+    * usually the round function is used with month or a year parameter.
+*/
+select hire_date, Round (hire_date, 'month') as rounded
+from employees;
+/*
+    * if I want to round the specific date by month, the return date will be the first day of the nearest month.
+    * If the day is greater of Fifteen, the returning date will be rounded to the first day of the next month.
+       Otherwise, the move will be the same, But the day will be around to the first day of the present month.
+    * If I use the round function with the year parameter this time, the month and the day will be rounded to the 
+           first day of the existing year or the first day of the next year, depending on the specified date you provide.
+    * If the specified date is about half of the year, it will be rounded to the first day of the next year, Otherwise it will be 
+          rounded to the first day of the current year.
+    * For example, if the month is July or any month after that, it will be around to the 1st of January at next year,
+         otherwise it will be around to the 1st of January, But this time, the year will be this year I mean, the year 
+         in the specified date.
+*/
+
+                                                        -------------------------------
+Trunc(date, [format])
+-- truncate a date/time value to specific element.
+-- if you don't specify a format, then the function will truncate the value to the nearest day.
+select trunc(sysdate, 'month')
+from dual;
+select trunc(sysdate, 'Year')
+from dual;
+/*
+    * if the formate is a month then it return the first day of the current month no matter what is the value of the day.
+    * if the formate is a year then it return teh first day of the current year no matter what is teh value of days or month
+*/
+select employee_id, hire_date, trunc(hire_date, 'month') as truncte, round(hire_date, 'month') as rounded
+from employees;
+
+                                                    ----------------------------------------
+Extract(date_component form date)
+-- extracts a specific part of a date and returns it.
+--The extract function except one parameter, But this time that parameter is a bit different than the others.
+--For this parameter, we first write the date component, And then from and then the date, But notice that these are
+    --all one parameter because there is no common between them.
+-- The date component is a keyword that represents the part of the day to extract, such as day, month,year, etc..
+select extract(month from hire_date)
+from employees;
+-- if the extracted is month then it return the number of that month in the specified date.
+select extract(year from hire_date)
+from employees;-- return the year.
+select extract(day from hire_date)
+from employees;
+
+                                                    --------------------------------------------
+ next_day(date, day_of_week)
+ --return the date of th next specified weekday.
+ -- It accepts two parameters which are date is a date to start form and the day of week which is the name of the day you are looking for.
+ select next_day(hire_date, 'tuesday')
+ from employees;
+ 
+                                                            ---------------------------------
+last_day(date)
+-- return teh last day of the month.
+select last_day(sysdate)
+from dual;
+
+
+
