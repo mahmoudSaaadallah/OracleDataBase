@@ -1417,3 +1417,298 @@ from dual;
 
 
 
+-----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------Conversion Functions---------------------------------------------------
+--Oracle Conversion Functions convert one data type into another.
+-- there are two type of conversion functios:
+/*
+    * Implicit Conversion: Oracle server automatically converts some data type to the required one.
+        Although implicit conversion converts some data types automatically, it is recommended to use
+        the explicit conversion functions to ensure the reliability of SQL statements.
+    * Explicit Conversion: Explicit conversions are done using the conversion functions explicitly.
+*/
+                                                                            --------------------------------------
+ Implicit conversion
+ -- A VARCHAR2 or CHAR value is converted to a NUMBER or a DATE by the Oracle server automatically.
+-- A NUMBER or a DATE value is automatically converted to character data by the Oracle server.
+-- The implicit conversions are performed only if the characters match with a valid number or date.
+select * from employees 
+where  salary > '15000';
+-- here as we see the value 15000 is between single quots so it's a string, but the oracle server convert it to a numeric 
+    -- data type to match with salary column data type which is a number. this process of conversions happen automaticly 
+    -- to preform the condition.
+
+select * from employees
+where hire_date = '17- jun-03';
+-- as we see here the value '17- jun-03' is a string value which be converted to a date by oracle server.
+/*
+    * THE WAY OF CONVERSION IS THE ENGIN CHECK THE DATA TYPE OF COLUMN HIRE_DATE AND FIND THAT IT'S
+       A DATE AND CHECK THE DATA TYPE OF THE VALUE WHICH IS STRING SO IT'S CONVERT IT TO DATE TO MATCH TEH DATATYPE OF COLUMN.
+*/
+select first_name || employee_id
+from employees;
+-- here we concate a string column with numeric column so the oracle server convert the data type of numeric column to a character column.
+
+select first_name || hire_date
+from employees;
+--  convert dateinto string.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------Explicit conversion-----------------------------------------------------
+-- Used for converting data type of a value to another data type explicitly.
+-- There are 3 functions for explicit data type conversion which are:
+TO_CHAR()                                           TO_NUMBER()                                                             TO_DATE()
+                                                                    
+                                                                    -----------------------------
+                                                                    ------------------------------
+TO_CHAR()
+-- used to converts the number and date data type into a varchar2 data type in a specified format.
+-- SYNTAX
+    TO_CHAR(date || number, [format_model], [nls_parameters])
+/*
+    * this function accept three parameter:
+     - date || number: the value that to be converted into varchar2 type. it can be a date or a number.
+     - format_model The input value is converted to the VARCHAR2 data type in the specified format model.
+       if you don't specifie the format then the engin will use the defult format
+     - nls_parameter Specifies the language for the names and abbreviations of the days and months
+            (E.g., Monday Mon, January Jan, etc.).
+           if you don't specifie the nls the engine will use the default language.
+*/
+--THE TO_CHAR FUNCTION IS CASE SENSITIVE.
+select to_char(hire_date, 'YYYY')
+from employees;
+-- AS we see here teh format si the year in th full stander so the output is the year of hireing for each employee.
+
+=====================================================================================
+==================================================================================
+--DATE _FORMAT                                                                                                                   |                                                                                                                                     
+'YYY'=>> Four digit representation of a year (2021 ).                                                                                                                             
+'YY || RR'=>>The last two digits of a year (21).                                                                                                                            
+'year'=>> Full spelling of a year in English (Twenty twenty-one).                                                                                                                           
+'MM'=>>Two digits of the month (11).                                                                                                                         
+'MON'=>>Three letter representation Of month ('SEP').                                                                                                                        
+'MONTH'=>>The full name of the month in English ('SEPTEMBER').                                                                                                                        
+'DD'=>>Numeric day of the month (27).                                                                                                                        
+'DY'=>>Three letter representation of the days of the week ('SAT').                                                                                                                        
+'DAY'=>>Full names of the days of the week in English ('SATURDAY').                                                                                                                        
+'HH'(HH12 || HH24)=>>Two-digit hour in 12-24 format (07),(22).                                                                                                                      
+'MI'=>>Two-digit minute (48).                                                                                                                       
+'SS'=>>Two-digit second (52).                                                                                                
+'TH'=>>Ordinal Number (DDTH 5TH).                                                                                                                        
+'SP'=>>The spelling of a number (DDSP -> FOUR).                                                                                                                         
+'spth || thsp' =>>The spelling of an ordinal number (DDSPTH FOURTH).                                                                                                                            
+=================================================================================================================
+========================================================================================
+
+SELECT to_char(to_date('10-jun-23'), 'dd-Month-yyyy')
+from dual; --'10-Jun      -2023'
+-- In this query we want to convert the date'10-may-23' to a varchar2 using to_char() function with 'dd-mon-yyyy' format.
+select to_char(to_date('10-jun-23'),'YY')
+from dual;--23
+select to_char(to_date('10-may-23'),'RR')
+from dual;--23
+select to_char(to_date('10-jun-23'),'Year')
+from dual;--23
+select to_char(to_date('10-jun-23'),'mm')
+from dual;--06
+select to_char(to_date('10-jun-23'),'mon')
+from dual;--'may'
+select to_char(to_date('10-jun-23'),'month')
+from dual;--'june     '
+select to_char(to_date('10-jun-23'),'Month')
+from dual;--'May      '
+select to_char(to_date('10-jun-23'),'DD')
+from dual;--'10'
+select to_char(to_date('10-jun-23'),'Dy')
+from dual;--'Sat'
+select to_char(to_date('10-jun-23'),'Day')
+from dual;--'Saturday '
+select to_char(to_date('10-jun-23'),'HH')
+from dual;--'12'
+select to_char(to_date('10-jun-23'),'MI')
+from dual;--'00'
+select to_char(to_date('10-jun-23'),'SS')
+from dual;--'00'
+select to_char(to_date('10-jun-23'),'DDTH')
+from dual;--'10TH'
+select to_char(to_date('10-jun-23'),'DDSP')
+from dual;--'TEN'
+select to_char(to_date('10-jun-23'),'DDspth')
+from dual;--'TENTH'
+select to_char(to_date('10-jun-23'),'ddthsp')
+from dual;--'tenth'
+
+-----------------------------------------------------
+select to_char(hire_date,'Day/Month/Year')
+from employees;
+select to_char(hire_date,'Month')
+from dual;
+select to_char(hire_date,'yyyy')
+from dual;
+select hire_date, to_char(hire_date, 'Mon-YYYY')
+from employees;
+select hire_date, to_char(hire_date, 'Dy-Mon-YYYY')
+from employees;
+select hire_date, to_char(hire_date, 'Day-Mon-YYYY')
+from employees; 
+select hire_date, to_char(hire_date, 'Day-Month-YYYY')
+from employees;
+select hire_date, to_char(hire_date, 'Day-Month-Year')
+from employees;
+select hire_date, to_char(hire_date, 'Day-Month-Year  HH12')
+from employees;
+select hire_date, to_char(hire_date, 'Day-Month-Year  HH24')
+from employees;
+select hire_date, to_char(hire_date, 'Day-Month-Year  HH-MI')
+from employees;
+select hire_date, to_char(hire_date, 'Day-Month-Year  HH-MI-SS')
+from employees;
+select hire_date, to_char(hire_date, 'DDTH-Month-YY  HH-MI-SS')
+from employees;
+select hire_date, to_char(hire_date, 'DDTH-MMTH-yy  HH-MI-SS')
+from employees;
+select hire_date, to_char(hire_date, 'DDsp-MMTH-yy  HH-MI-SS')
+from employees;
+select hire_date, to_char(hire_date, 'DDthsp-MMspth-yy  HH-MI-SS')
+from employees;
+
+======================================================================================
+======================================================================================
+--NUMBER FORMAT
+'9'==>specifie the number of digits.
+'0'==>specifie leading or trailing zeros.
+'$'==>display dollar sign.
+'L'==>display local currency symbol.
+'.'==>display a decimal point.
+','==>display comma as indicator.
+======================================================================================
+======================================================================================
+
+select to_char(27479632, '$999,999,999.99')
+from dual;--'  $27,479,632.00'
+-- In this query we want to convert 27479632 this numirc value to a varchar2 value in the format '$999,999,999.99' as 
+   --we add comma sign and adding a decimal point and adding dollor sign to get the output as astrin gin this format.
+
+select to_char(27479632.6584, '$999,999,999.99')
+from dual;--'  $27,479,632.66'
+-- here we add some decimal number in our given number and we want o display just two numbers so it rounded it.
+select to_char(27479632, 'L999,999,999.99')
+from dual;--'           $27,479,632.00'
+-- if there is no decimal number it display zeros
+select to_char(27479632.6584, '$999,999,999.00')
+from dual;--'  $27,479,632.66'
+-- here we use the 00 in the decimal place in our format so if there is any number in the decimal place in the givien number
+   -- it will be displayed if not it display 00.
+select to_char(27479632, '$999999999.99')
+from dual;--'  $27479632.00'
+
+-- we could this function to display the new salary for employees.
+select salary as "old salary", commission_pct, to_char(salary + salary * commission_pct, '$99,999.99') as "new salary"
+from employees;
+-- here we find that the output has alot of null values as commission_pct is null and any arthimatic operation with null value gets null.
+   --we will solve this problem in the comming function, but until now we will display the employees whoes commission_pct is not null;
+select salary as "old salary", commission_pct, to_char(salary + salary * commission_pct, '$99,999.99') as "new salary"
+from employees
+where salary + salary * commission_pct  is not null
+order by "new salary" desc;
+
+
+                                                                        ====================
+                                                                        ====================
+TO_NUMBER()
+-- It's used to convert a text to a number.
+-- syntax
+to_number(char, [format_model])
+-- THE SAME NUMBER OFRAMT_MODEL APPLYED HERE WITH THE SAME RULE
+select to_number('$64,646,363,656', '$999,999,999,999.00')
+from dual; --64646363656
+-- In this we need to convert from varchar2 the value'$64,646,363,656' to a number, so we have to write the format
+   -- of the givien number to convert it.
+-- The formate of the givien number must match with the format we use in the function. if the two format are not the same
+   -- then it returns an error
+select to_number('64,646,363,656', '$999,999,999,999.00')
+from dual; --error as the doller sign is not in the givin characters
+
+                                                                ===============================
+                                                                ===============================
+TO_DATE()
+--It's used to convert a varchar2 data to a date in aspecifie format.
+-- syntax
+TO-DATE(CHAR, [FORMAT_MODEL])
+-- FORMAT MOFDEL IS THE SAME AS DATE FORMAT_MODEL THAT WE USE BEFOR.
+
+select first_name, to_char(hire_date, 'day-month-YYYY')
+from employees
+where hire_date > to_date('jun-25-07', 'mon, dd, YY');
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------NVL function--------------------------------------------------------------------
+ -- preforming some operations with the null values may result in getting null values or nothing.
+ -- The NVL function allows us to replace anull value with a meaingful alternative 
+ 
+ --syntax:
+ NVL(Expression1, Expression2)
+ /*
+    * If the expression1 is null, then NVL() function return expression2
+    * if the expression1 is not null, then it return expression1.
+    * data type for expression1 msut match with data type for expression2.
+ */
+-- if you remeber using to to_char function to get the new salary for each employee by add salary to the result of 
+   -- multiplling salary to commission_pct, but we faced a problem there as there are some employees not having a commission_pct
+   -- they have an null value in the commission_pct in it's column 
+-- if you remeber we solve this problem by display the new salary for employees whos have a commissio_pct, but this 
+   --soluation is not the best soluation as we need to display the old salary for employees whoed commission_pct is null.
+-- to do  that we use the nvl to deal with this problem.
+select employee_id, first_name, salary as "old salary", commission_pct,
+           nvl(salary + (commission_pct * salary), salary) as "new salary"
+           from employees
+           order by "new salary" desc;
+
+-- to know the value of commission_pct for each employee as a numeric value we need to replace the null value with zero.
+select employee_id, first_name, nvl(commission_pct, 0)
+from employees;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------- NVL2 function----------------------------------------------------------------------------------------------------
+-- NVL2 function allow us replace a value when a null value is encountered as well as when non null value is encounterd.
+--  syntax
+NVL2(Expression1, Expression2, Expression3)
+/*
+    * if the expression one in not null, it returns expression2, but if the expression1 is null then it return the expression3
+*/
+--THE EXPRESSION1 DOESN'T HAVE TO BE THE SAME  DATA TYPE AS EXPRESSION2, BUT THE EXPRESSION2 AND 
+    -- EXPRESSION3 MUST BE THE SAME DATA TYPE.
+select employee_id, nvl2(commission_pct, 'HAS', 'HASN''t')
+from employees;
+-- This query retrun the string HAS if the commission_pct is not null, and return HASN't if the commission_pct is null.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------NULLIF Function----------------------------------------------------------------------------------------------------
+--syntax
+NULLIF(Expression1, Expression2)
+-- It's compare expression1 and expression2 if they are equal to each other it returns null else it returns expression1
+-- these expressions must be in the same data type.
+select first_name, last_name, nullif (length(first_name), length(last_name))
+from employees;
+-- in this query the output will be null if the length of first_name of the employee is the same lenght of his last_name
+-- we could use the same function to get the first_name and last_name and length for the employees whoes first_name
+    -- and last_name are the same.
+select first_name, last_name, length(first_name)
+from employees
+where nullif(length(first_name), length(last_name)) is null;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------Coalsece function----------------------------------------------------------------------------------------------------
+-- It accepts a list of arguments and returns the first one that evaluates to a non null value.
+--syntax
+Coalesce(Expression1, Expression2, Expression3, ..........., ExpressionN)
+/*
+    * it check the Expression1 if it not null it will be returned if it null it check the Expression2 if it not null it will be returned 
+       if not it check Expression3 and so on.......
+    * all arguments in this functino must be in the same data type.
+*/
+--IF ALL EXPRESSIONS ARE NULL THEN THE FUNCTION RETURNS NULL.
+select city, state_province, coalesce(state_province, city)
+from locations;
+-- in this query it check if the employee has a state_province then it will be returned if not his city will be returned.
