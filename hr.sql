@@ -1712,3 +1712,142 @@ Coalesce(Expression1, Expression2, Expression3, ..........., ExpressionN)
 select city, state_province, coalesce(state_province, city)
 from locations;
 -- in this query it check if the employee has a state_province then it will be returned if not his city will be returned.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------Condition Expressions------------------------------------------------------------
+-- Condition expressions perform differant actions or cmputations depending on whether a program is specified condation
+    -- evalutes true or false.
+-- Oracle provides two conditions expression functions whic are CASE and  DECODE  to make decisions based on condaitions.
+
+----------------------------------------------------CASE Expression------------------------------------------------------------
+-- Case preforms an if-then-else check whitin an SQL statement 
+--Syntax
+Case expression 
+                          when compersion_expression_1 then result1
+                          when compersion_expression_2 then result_2
+                          :
+                          :
+                          when compersion_expression_N then result_N
+            else result
+end;
+/*
+    * It's the same as if and if else in the programming.
+    * The expression after case keyword is the expression that you will compare to the conditions after when statement.
+    * If the expression is equal to compersion_expression_1 then it returns the result_1, if not it check the compersion_expression_2
+        and so on.
+    * If the expression is not equal to any of compersion_expression then it return the result after else keyword.
+    * Expression and comopersion expressionns must be in the same data type, but the result may be in other type 
+    * The results must all be in the same data type.
+    * The case can be used in both select and where clause.
+*/
+
+--THERE ARE TWO WAYS OF USING THE CASE EXPTRSSIONS WHICH ARE 
+-- 1- simple case expression.
+-- 2- searched case expression.
+
+--------------------------------------------Simple case 
+--The expression is stated at the begging, and the possible results are checked in the condition patameters.
+case first_name 
+                        when 'Alex' then 'Name is Alex'
+                        when 'John' then 'Name is John'
+        else 'Another'
+end;
+------------------------------------------------------------searched case 
+-- The expressionare used within each conditionwithout mentioing it at the start of the case expression.
+ case 
+        when first_name = 'Alex' then 'Name is Alex'
+        when first_name = 'John' then 'Name is John'
+     else 'Another'
+end;
+--THE ADVANTAGE OF THIS TYPE IS WE CAN USE DIFFERENT COMPERSION WITH EACH WHEN STATEMENT.
+case 
+        when first_name = 'Alex' then 'Name is Alex'
+        when Salary > 10000 then 'salary is greater than 10000'
+    else 'Another'
+end;
+/*
+    * In searched case expression the expression after each when statment not have to be in the same data type as you could 
+        different data type after eache when statment with different data type, but all teh result must be in the same data type 
+    * else clause is optional in both type.
+*/
+select first_name, last_name, job_id, salary, hire_date,
+           case job_id
+                            when 'ST_MAN' THEN salary * 1.2
+                            when 'SH_MAN' THEN salary * 1.3
+                            when 'SA_MAN' then salary * 1.4
+                    else salary
+            end " Updated Salary"
+    from employees ;
+/*
+    * In this query to understand what it do we have ot start formthe formkeyword which mean formtable employees
+        we want ot select first_name, last_name, job_id, salary, hire_date, and there is an extra column with elias name "updated salary"
+        this column has teh value of new salary depend on the value of job_id as we use case expression to check the value job_id
+        if it equal to 'ST_MAN' then teh new salary will be 20% increase, if it equal to 'SH_MAN' the new sa;ary will be 30% increase
+        if it equal to 'SA_MAN' then new salary will be 40% increase else the new salary will b eh same as the old salary.
+*/
+-- this example we use the simple case expression
+
+-- the same example by searched case
+select first_name, last_name, job_id, salary, hire_date,
+           case 
+                    when job_id = 'ST_MAN' THEN salary * 1.2
+                     when job_id = 'SH_MAN' THEN salary * 1.3
+                    when job_id = 'SA_MAN' then salary * 1.4
+                else salary
+         end " Updated Salary"
+    from employees ;       
+--************************************Important note**************************************************************
+/*
+    * when using searched case and we have different expressions with each when statement, if two expressions affect 
+        same row teh first one will be the only one to excuted. this mean these conditions are evaluated one by one startting from the 
+        first one to the end, and if on condition is satisfied, then the related result is returnd and the rust is not valuated to the same rows again.
+*/
+select first_name, last_name, salary,
+            case 
+                    when job_id = 'AD_PRES' then 1.20 * salary 
+                    when last_name = 'King' then 2 * salary 
+            end as "new salary "
+from employees;
+-- In this query there are two cnditions in the case expression both of them satisfiy with the employee Steven King as he
+    -- work at 'AD_PRES' and his last name is King, so engin will excute the first result with the  first statement and the secand 
+    -- Result will not excuted as it affect the same Row.
+
+select first_name, last_name, job_id, salary, hire_date         
+from employees 
+where (case
+                            when job_id = 'ST_MAN' and salary > 5000 THEN 1
+                            when  job_id = 'SH_MAN' and salary > 7000 THEN 1
+                            when  job_id = 'SA_MAN' and salary > 10000 then 1
+                    else 0
+            end) = 1
+--In this query we need to get first_name, last_name, job_id, salary, and hire_date for employees whoes job_id = 'ST_MAN' and salary > 5000
+   -- OR job_id = 'SH_MAN' and salary > 7000, OR  job_id = 'SA_MAN' and salary > 10000.
+   
+   
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------Decode Function--------------------------------------------------------------------------------------------------------
+/*
+    * The decode function is a function that is specific to oracle easy to use, and an alternative to the case experssions.
+    * It's used to provide an IF-THEN-ELSE logic in SQL.
+    * The different between the case expression and Decode is when we use the case expression we write too much but 
+       the Decode function is alot simpler. also the case is an expressio whereas Decode is a function .
+*/
+--Syntax
+Decode(column || expression, search1, result1, search2, result2,................., default);
+/*
+    * The first parameter is column name or an expression, then search expression1 comes if it satisfy then it returns the result1
+        then the search expression2  comes if it satisfy then it returns the result2 and so on...
+    * The default which is like the else statement, if all search expressions not satisfy the default will be returned.
+    * we could put number of search expressions as we want.
+    * All the search expressions must be in the same data type.
+    * All the results expressions must be in teh same data type.
+    * The search and result can be in different data type.
+*/
+select first_name, last_name, job_id, salary, hire_date,
+            decode(job_id, 'ST_MAN', SALARY * 1.20,
+                                     'SH_MAN', SALARY * 1.30,
+                                     'SA_MAN', SALARY * 1.40,
+                                      salary) as "updated salary"
+from employees;
+-- This query is the same as we use in the case expression, but here we don't need to use when statement with each condition.
