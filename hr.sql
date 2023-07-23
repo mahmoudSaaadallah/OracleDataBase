@@ -1872,6 +1872,7 @@ group_function([distinct || All] column || experssion)
 
 -- ALL GROUP FUNCTIONS IGNORE THE NULL VALUES, BUT YOU CAN USE THE NVL, NVL2, COALESCE, DECODE, OR CASE EXPRESSION
    -- TO HANDEL THE NULL VALUE.
+  
    
 --------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------AVG Function----------------------------------------------------------------------------------------------
@@ -1901,6 +1902,7 @@ from employees;
          it, but in the secand result as we use the vul function which convert all null values to zero so it affect the result of average.
 */
 
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------Count Fuction--------------------------------------------------------------------------------------------
 --Returns the number of rows returned by a query.
@@ -1925,6 +1927,7 @@ from employees;
            null values and the duplicate valules.
 */
 
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------Max Function----------------------------------------------------------------
 --The MAX function returns the maximum value of an expression or column.
@@ -1938,6 +1941,7 @@ Max(expression);
 select max(salary), max(hire_date), max(first_name)
 from employees;
 --This query will return the maximum salary from employees, the maximum hire date(the lated one), and the maximum first_name.
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------Min Function----------------------------------------------------------------------------------------------------
@@ -1954,6 +1958,7 @@ select min(salary), min(hire_date), min(first_name)
 from employees;
 --This query will return the minimum salary from employees, the minimum hire date(the lated one), and the minimum first_name.
 
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------Sum Function--------------------------------------------------------------------
 -- Used for getting the sum of the column or expression you provide it with.
@@ -1966,6 +1971,7 @@ Sum([distinct || All] expression);
 select sum(salary), sum(distinct salary)
 from employees;
 -- this query will get how much mony a company pays to its employees.
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------LISTAGG Function------------------------------------------------------------------------------------------------
