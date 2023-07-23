@@ -1872,7 +1872,7 @@ group_function([distinct || All] column || experssion)
 
 -- ALL GROUP FUNCTIONS IGNORE THE NULL VALUES, BUT YOU CAN USE THE NVL, NVL2, COALESCE, DECODE, OR CASE EXPRESSION
    -- TO HANDEL THE NULL VALUE.
-  
+   
    
 --------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------AVG Function----------------------------------------------------------------------------------------------
@@ -1996,3 +1996,129 @@ from locations
 where country_id = 'US';
 -- This query will get the locatios where the company has offices or ware houses in the U.S.
 
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------Grouping Data----------------------------------------------------------------------
+-- If i want to get the average slary for each job_id and use the next query,  I will get an error
+select job_id, Avg(salary) from employees;
+-- As we have here an aggregate function with a column in the same select clause and this is not legal.
+-- The way to dao so is by using group by clause.
+                                                                -----------------------------
+                                                                
+---------------------------------------------Group by ---------------------------------------------------------------------
+-- creating groups of values using the group functions.
+-- Syntax
+select column_name, aggregate_function
+from table_name 
+where condition
+group by column_name
+order by sort_expression;
+/*
+    * if ther is a where clause the group by must be after the where claues.
+    * TEH COLUMN AND THE EXPRESSIONS WHICH IN THE SELECT STATEMENT WITH THE AGGREGATE FUNCTION MUST
+        BE IN THE GROUP BY CLAUSE, HOWEVER THE COLUMN AND EXPRESSIONS WRITTEN IN TEH AGGREGAE FUNCTION DON'T
+         NEED TO BE WRITTEN IN THE GROUP BY CLAUSE.
+    * We can use more than one expression -or column- in a GROUP BY clause.
+    * The SELECT clause cannot have any other individual columns than what is used with the GROUP BY clause.
+    * We don't need to use all the columns used with the GROUP BY clause in the SELECT statement.
+    * The group by clause group the rows not columns.
+    * In the SELECT statements, we can use the group functions with different columns than the GROUP BY has.
+    * We can use as many group functions as we want.
+    * Column aliases cannot be used with the GROUP BY clause.
+    * The ORDER BY clause cannot have any other individual columns than the GROUP BY clause has.
+*/
+
+select job_id, Avg(salary)
+from employees
+group by job_id;
+-- This query will return the hob-id as a group with it's average salary.
+
+select job_id, department_id, manager_id, Avg(salary)
+from employees
+group by department_id, job_id, manager_id;
+
+
+select job_id, department_id, sum(salary)
+from employees
+group by job_id; -- Error
+-- this query will get an error as the columns in the select clause not in the group by clause.
+-- to handle it we use the next query.
+select job_id, department_id, sum(salary)
+from employees
+group by job_id, department_id; -- it's run
+-- in this query we use a column departmnet_id and job_id in select clause and in goup by clause.
+
+select job_id, sum(salary)
+from employees
+group by job_id, department_id; -- it's run 
+-- in this query we use a column departmnet_id in the group by clause, but we didn't use it in the select clause and this also work.
+
+select department_id as department, avg(salary)
+from employees
+group by department; -- error 
+--This will get an error as the column aliases cannot be used with the group by, because ther is an order for excution the query in database
+   -- from 
+   -- where 
+   -- group by 
+   -- having
+   -- select 
+   -- order by
+-- As we see the group by excuted before select so the group by cannot see the alise.
+-- we have to know that the where clause excute before the group by so the condition excute first then the group by 
+   -- applied for the output from the where condition.
+
+select job_id, avg(salary) from employees
+group by job_id;
+/*
+    * This query will return the average salary for each job_id, but what if i want to filter the output like if i want 
+        only the average salary for each job_id in condition that the average salary is greater thean 10000
+        if we the next query we will get an error.
+*/
+select job_id, avg(salary) from employees
+where avg(salary)  >10000
+group by job_id; -- Error
+-- This will get an error as we cannot use the aggregate functions in where clause.
+
+-- THE  GROUP FUNCTIONS CANNOT BE USED IN  WHERE CLAUSE.
+   -- this because the where clause excute before group by clause.
+
+/*
+    * we can use the having clause to filter data after it has been grouped.
+    * The having clause work simalar to where clause, but the where clause filters rows whereas having clause filter grouped data.
+    * The having clause appears after teh group by clause and before the order by clause 
+*/
+select job_id, avg(salary) from employees
+group by job_id
+having avg(salary) > 10000;
+--This query will return the job_id and the average salary for each group under the condition of the average salary for the job_id greater than 10000.
+
+--WE COULD USE HAVING CLAUSE BEFOR GROUP BY CLAUSE, BUT USING IT AFTER GROUP BY IS PREFERRED.
+-- the where clause and having clause can also be used togther in a query.
+select job_id, avg(salary) from employees
+where salary > 5000
+group by job_id
+having avg(salary) > 10000;
+
+-----------------------------------------------------Nasted group functions-------------------------------------------------------
+-- group function can be nasted.
+-- the output of the inner function is the input of the outer function.
+-- we have to use group by clause when using nasted group functions.
+-- group function can be nsted to a depth of two.
+
+select department_id, avg(salary) from employees
+group by department_id;
+--In this query we will display all the departmetn_id with the average salary in for each department.
+-- what about if i want the maximum value from this output? or i want the maximum average salary?
+    -- we could use neasted group function like max(avg(salary)) this nasted fruntion will get the result.
+
+select department_id, max(avg(salary)) form employees
+group by department_id; -- Error
+-- This query gets an error as we can't use an indviual column name with the nasted group function in the select clause.
+
+select max(avg(salary)) from employees; -- error
+-- even if we delete the department_id formo the select clause, but we also cannot use the nested group function without group by clause.
+ 
+ select max(avg(salary) )from employees
+ group by department_id; -- 19333.333333333333
+ -- this query will get the correct value as we didn't use any indviual column with the nasted group function in the select clause
+      -- and we also use the group by clause.
