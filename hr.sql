@@ -1851,3 +1851,142 @@ select first_name, last_name, job_id, salary, hire_date,
                                       salary) as "updated salary"
 from employees;
 -- This query is the same as we use in the case expression, but here we don't need to use when statement with each condition.
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------Group Functions---------------------------------------------------------
+-- group functions is also called multiple row functions or Aggregate functions.
+--WHY DO WE NEED TO USE THE GROUP FUNCTIONNS?
+/*
+    * Assume that you're working in a company, your mannager want to know how may employees that company has.
+        or may request from you to find the employees who earn the maximum salary or may wonder the avarage salary 
+        your company pays for its employees.
+*/
+-- these kind of informations can easily be acquired using the group functions.
+group_function([distinct || All] column || experssion)
+--the distinct and all key words are optional, but we have to know the t the distinct wrote inside the group function before the patameter
+     -- name not outside the function.
+-- The group functions operate on multiple rows and return one result for each group.
+-- group functions usally used after select key word, and mulitple group functions can be used in a single select statement.
+
+-- ALL GROUP FUNCTIONS IGNORE THE NULL VALUES, BUT YOU CAN USE THE NVL, NVL2, COALESCE, DECODE, OR CASE EXPRESSION
+   -- TO HANDEL THE NULL VALUE.
+   
+--------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------AVG Function----------------------------------------------------------------------------------------------
+--The Avg function is stands ofr average. It's used to calculate teh average value of the columns or expressions.
+AVG([Distinct || All] expression)
+--It's exclusively used with numeric data.
+-- The distinct and all key words can be used to handle the duplicate values.
+--The all is the defult, so if you didn't write any thing ti will calculte and consider you put all.
+-- Its's ignore null values, but if you want to work with null value like you may want to change all null values to zero and work with them 
+    -- you could use NVL or NVL2....
+select AVG(salary), avg(all salary ), avg(distinct salary)
+from employees;
+-- In this query we could use round function to make the results have more sence.
+
+select Round(AVG(salary), 3), round(avg(all salary ), 3), round(avg(distinct salary), 3)
+from employees;
+/*
+    * as we see here in the results the firt value and the secand are be the same as in the frist functions it we did't put all 
+         or use distinct key words but the engine use the -All- as a default, but in the third one it will ignor the duplicate value
+         so teh result will change as there are some duplicate values in salary column.
+*/
+
+select Avg(commission_pct), avg(nvl(commission_pct, 0))
+from employees;
+/*
+    * this query show the affect of nvl values as in the first result we didn't work with teh vull values as avg function ignore
+         it, but in the secand result as we use the vul function which convert all null values to zero so it affect the result of average.
+*/
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------Count Fuction--------------------------------------------------------------------------------------------
+--Returns the number of rows returned by a query.
+-- Syntax
+count([Distinct || All] exprission);
+-- You can use the DISTINCT keyword to count the distinct values of the expression, or ALL keyword to count all rows.
+-- The all keyword is default.
+Count(*):
+-- '*' represents all rows including the NULL values, and duplicate values.
+--If a column name is used with the Count function, this time, the NULL values are ignored.
+Count(first_name);
+-- This way will ignore all null values like all the agreget functions.
+-- We can use the NVL NVL2 COALESCE CASE or DECODE functions to handle the NULL values.
+
+select count(*), count(manager_id), count(all manager_id), count(distinct manager_id)
+from employees;
+/*
+    * The output of this query will be four values the first one is the number of all rows include null values, and duplicate values.
+       the secand value will be the number of all manager_id even when we didn't use the all keyword the all we be used as default.
+       the third value will be the same as the secand one.
+       the fourth value will be the number of dintinct manager_id which mean the number of manger_id by ignoring the 
+           null values and the duplicate valules.
+*/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------Max Function----------------------------------------------------------------
+--The MAX function returns the maximum value of an expression or column.
+--Syntax
+Max(expression);
+-- It is used with numeric, character or date data types.
+-- Using the DISTINCT or ALL keywords with the MAX function is useless.
+-- The null-related functions can be used with the MAX function to handle the NULL values.
+
+-- There is no need to use distinct or all keyword with th emax function as it returns one value from the column.
+select max(salary), max(hire_date), max(first_name)
+from employees;
+--This query will return the maximum salary from employees, the maximum hire date(the lated one), and the maximum first_name.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------Min Function----------------------------------------------------------------------------------------------------
+-- Used for getting the minimum value of the expression or column.
+-- Syntax
+Min(expression)
+-- Used with numeric, character and date data types.
+-- Using the DISTINCT or ALL keywords with the MIN function is useless.
+-- The NVL, NVL2, COALESCE, CASE or DECODE functions can be used to handle the NULL values.
+
+-- There is no need to use distinct or all keyword with the min function as it returns one value from the column.
+
+select min(salary), min(hire_date), min(first_name)
+from employees;
+--This query will return the minimum salary from employees, the minimum hire date(the lated one), and the minimum first_name.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------Sum Function--------------------------------------------------------------------
+-- Used for getting the sum of the column or expression you provide it with.
+-- Syntax 
+Sum([distinct || All] expression);
+-- The ALL and DISTINCT keywords can be used to handle duplicate values.
+-- It is exclusively used with numeric data.
+-- The NVL, NVL2, COALESCE, CASE or DECODE functions can be used to handle the NULL values.
+
+select sum(salary), sum(distinct salary)
+from employees;
+-- this query will get how much mony a company pays to its employees.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------LISTAGG Function------------------------------------------------------------------------------------------------
+-- The LISTAGG is used to aggregate strings from data in columns in a database table.
+--WHAT IS STRING AGGREGATION?
+/*
+    * it's a technique similar to concatentation, but you can use grouping, and it also allows us to order the
+        elements in the concatenated list.
+*/    
+-- Concatenates values from separate rows into a single value.
+-- Transforms data from multiple rows into a single list of values separated by a specified delimiter.
+-- Syntax
+Listagg(column, [Delimiter]) within group (order by sort_expression);
+-- The delimiter is optional, if not specify there is no value will be used.
+
+select listagg(first_name, ', ') within group(order by first_name)
+from employees;
+-- in this query we need to display all employees' first_name in one row(one line) sperated by a comma, and sorted by the first_name values.
+
+select listagg(city, ',  ') within group (order by city)
+from locations
+where country_id = 'US';
+-- This query will get the locatios where the company has offices or ware houses in the U.S.
+
